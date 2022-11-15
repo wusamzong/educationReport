@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nginx
+  name: nginx
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+        applicationId: "nginx_2019_01_22_00001"
+        queue: root.sandbox
+      name: nginx
+    spec:
+      schedulerName: yunikorn
+      containers:
+        - name: nginx
+          image: "nginx:latest"

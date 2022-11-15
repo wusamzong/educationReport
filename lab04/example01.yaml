@@ -1,0 +1,38 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gang-scheduling-job-example01
+spec:
+  completions: 2
+  parallelism: 2
+  template:
+    metadata:
+      labels:
+        app: sleep
+        applicationId: "gang-scheduling-job-example01"
+        queue: root.sandbox
+      annotations:
+        yunikorn.apache.org/task-group-name: task-group-example01
+        yunikorn.apache.org/task-groups: |-
+          [{
+              "name": "task-group-example01",
+              "minMember": 2,
+              "minResource": {
+                "cpu": "100m",
+                "memory": "50M"
+              },
+              "nodeSelector": {},
+              "tolerations": [],
+              "affinity": {}
+          }]
+    spec:
+      schedulerName: yunikorn
+      restartPolicy: Never
+      containers:
+        - name: sleep30
+          image: "alpine:latest"
+          command: ["sleep", "30"]
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "50M"

@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: sleep
+    applicationId: "fixed-rule-example01"
+    queue: "my_special_queue"
+    yunikorn.apache.org/username: developer
+  name: task0
+spec:
+  schedulerName: yunikorn
+  containers:
+    - name: sleep-30s
+      image: "alpine:latest"
+      command: ["sleep", "30"]
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "500M"

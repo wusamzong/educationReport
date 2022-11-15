@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gang-app-timeout
+spec:
+  completions: 15
+  parallelism: 15
+  template:
+    metadata:
+      labels:
+        app: sleep
+        applicationId: gang-app-timeout
+        queue: fifo
+      annotations:
+        yunikorn.apache.org/task-group-name: sched-style
+        yunikorn.apache.org/schedulingPolicyParameters: "placeholderTimeoutInSeconds=60 gangSchedulingStyle=Hard"
+        yunikorn.apache.org/task-groups: |-
+          [{
+              "name": "sched-style",
+              "minMember": 15,
+              "minResource": {
+                "cpu": "1",
+                "memory": "1000M"
+              },
+              "nodeSelector": {},
+              "tolerations": [],
+              "affinity": {}
+          }]
+    spec:
+      schedulerName: yunikorn
+      restartPolicy: Never
+      containers:
+        - name: sleep30
+          image: "alpine:latest"
+          imagePullPolicy: "IfNotPresent"
+          command: ["sleep", "30"]
+          resources:
+            requests:
+              cpu: "1"
+              memory: "1000M"
