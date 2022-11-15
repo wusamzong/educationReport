@@ -1,23 +1,19 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Pod
 metadata:
   labels:
-    app: nginx
-  name: nginx
+    app: sleep
+    applicationId: "prvoided-rule-example01"
+    queue: "my_special_queue"
+    yunikorn.apache.org/username: "developer"
+  name: task0
 spec:
-  replicas: 5
-  selector:
-    matchLabels:
-      app: nginx
-  template:
-    metadata:
-      labels:
-        app: nginx
-        applicationId: "nginx_2019_01_22_00001"
-        queue: root.sandbox
-      name: nginx
-    spec:
-      schedulerName: yunikorn
-      containers:
-        - name: nginx
-          image: "nginx:latest"
+  schedulerName: yunikorn
+  containers:
+    - name: sleep-30s
+      image: "alpine:latest"
+      command: ["sleep", "30"]
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "500M"
